@@ -11,9 +11,9 @@ st.write("Enter passenger details and see if they would have survived!")
 # Load and train model
 @st.cache_data
 def train_model():
-  URL = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
-df = pd.read_csv(URL)
-   df["Age"] = df["Age"].fillna(df["Age"].median())
+      URL = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+    df = pd.read_csv(URL)
+    df["Age"] = df["Age"].fillna(df["Age"].median())
     df["Embarked"] = df["Embarked"].fillna(df["Embarked"].mode()[0])
     df["FamilySize"] = df["SibSp"] + df["Parch"] + 1
     df["IsAlone"] = (df["FamilySize"] == 1).astype(int)
@@ -25,8 +25,7 @@ df = pd.read_csv(URL)
 
     X = df.drop(columns=["Survived", "Cabin", "Ticket", "Name", "PassengerId"])
     y = df["Survived"]
-
-    model = RandomForestClassifier(n_estimators=200, random_state=42)
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X, y)
     return model, le_sex, le_embarked
 
