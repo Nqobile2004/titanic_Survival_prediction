@@ -13,7 +13,7 @@ st.write("Enter passenger details and see if they would have survived!")
 def train_model():
   URL = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
 df = pd.read_csv(URL)
-    df["Age"] = df["Age"].fillna(df["Age"].median())
+   df["Age"] = df["Age"].fillna(df["Age"].median())
     df["Embarked"] = df["Embarked"].fillna(df["Embarked"].mode()[0])
     df["FamilySize"] = df["SibSp"] + df["Parch"] + 1
     df["IsAlone"] = (df["FamilySize"] == 1).astype(int)
