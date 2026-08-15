@@ -18,49 +18,42 @@ def train_model():
     df["FamilySize"] = df["SibSp"] + df["Parch"] + 1
     df["IsAlone"] = (df["FamilySize"] == 1).astype(int)
 
-    le_sex = LabelEncoder()
-    le_embarked = LabelEncoder()
-    df["Sex"] = le_sex.fit_transform(df["Sex"])
-    df["Embarked"] = le_embarked.fit_transform(df["Embarked"])
+      le_sex = LabelEncoder()
+      le_embarked = LabelEncoder()
+      df["Sex"] = le_sex.fit_transform(df["Sex"])
+      df["Embarked"] = le_embarked.fit_transform(df["Embarked"])
 
-    X = df.drop(columns=["Survived", "Cabin", "Ticket", "Name", "PassengerId"])
-    y = df["Survived"]
-        model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X, y)
-    return model, le_sex, le_embarked
+      X = df[["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "FamilySize", "IsAlone"]]
+      y = df["Survived"]
+      model = RandomForestClassifier(n_estimators=100, random_state=42)
+      model.fit(X, y)
 
-model, le_sex, le_embarked = train_model()
+            return model, le_sex, le_embarked
 
-# User inputs
-st.sidebar.header("Passenger Details")
-pclass = st.sidebar.selectbox("Ticket Class", [1, 2, 3])
-sex = st.sidebar.selectbox("Sex", ["male", "female"])
-age = st.sidebar.slider("Age", 1, 80, 25)
-sibsp = st.sidebar.number_input("Siblings/Spouses Aboard", 0, 8, 0)
-parch = st.sidebar.number_input("Parents/Children Aboard", 0, 6, 0)
-fare = st.sidebar.slider("Fare", 0, 500, 32)
-embarked = st.sidebar.selectbox("Port of Embarkation", ["S", "C", "Q"])
+    model, le_sex, le_embarked = train_model()
 
-if st.button("Predict Survival"):
-    family_size = sibsp + parch + 1
-    is_alone = 1 if family_size == 1 else 0
+    st.sidebar.header("Passenger Details")
+    pclass = st.sidebar.selectbox("Pclass", [1, 2, 3])
+    sex = st.sidebar.selectbox("Sex", ["male", "female"])
+    age = st.sidebar.slider("Age", 0, 80, 25)
+    sibsp = st.sidebar.slider("Siblings/Spouses", 0, 8, 0)
+    parch = st.sidebar.slider("Parents/Children", 0, 6, 0)
+    fare = st.sidebar.slider("Fare", 0, 500, 32)
+    embarked = st.sidebar.selectbox("Embarked", ["S", "C", "Q"])
 
-    input_data = pd.DataFrame([[
-        pclass,
-        le_sex.transform([sex])[0],
-        age,
-        sibsp,
-        parch,
-        fare,
-        le_embarked.transform([embarked])[0],
-        family_size,
-        is_alone
-    ]], columns=["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "FamilySize", "IsAlone"])
+     if st.sidebar.button("Predict"):
+ family_size = sibsp + parch + 1
+ is_alone = 1 if family_size == 1 else 0
 
-    prediction = model.predict(input_data)[0]
-    proba = model.predict_proba(input_data)[0][1]
+ input_data = pd.DataFrame([[pclass, sex, age, sibsp, parch, fare, embarked, family_size, is_alone]],
+ columns=["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "FamilySize", "IsAlone"])
 
-    if prediction == 1:
-        st.success(f"✅ SURVIVED! Probability: {proba:.2%}")
-    else:
-        st.error(f"❌ DID NOT SURVIVE. Probability: {1-proba:.2%}")
+ input_data["Sex"] = le_sex.transform(input_data["Sex"])
+ input_data["Embarked"] = le_embarked.transform(input_data["Embarked"])
+
+ prediction = model.predict(input_data)
+
+ if prediction[0] == 1:
+ st.success("🎉 This passenger WOULD HAVE SURVIVED!")
+ else:
+ st.error("💀 This passenger would NOT have survived.")
