@@ -11,7 +11,7 @@ st.write("Enter passenger details and see if they would have survived!")
 # Load and train model
 @st.cache_data
 def train_model():
-      URL = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+    URL = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
     df = pd.read_csv(URL)
     df["Age"] = df["Age"].fillna(df["Age"].median())
     df["Embarked"] = df["Embarked"].fillna(df["Embarked"].mode()[0])
