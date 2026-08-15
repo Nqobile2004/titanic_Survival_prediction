@@ -18,7 +18,7 @@ def train_model():
     df["FamilySize"] = df["SibSp"] + df["Parch"] + 1
     df["IsAlone"] = (df["FamilySize"] == 1).astype(int)
 
-       le_sex = LabelEncoder()  <- NO spaces at the start
+       le_sex = LabelEncoder()  
       le_embarked = LabelEncoder()
       df["Sex"] = le_sex.fit_transform(df["Sex"])
       df["Embarked"] = le_embarked.fit_transform(df["Embarked"])
